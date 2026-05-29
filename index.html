@@ -2700,6 +2700,13 @@
         width: 40px !important;
         height: 40px !important;
         font-size: 13px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        line-height: 1 !important;
       }
       .pd-orient {
         top: 14px !important;
@@ -2707,6 +2714,13 @@
         width: 40px !important;
         height: 40px !important;
         font-size: 15px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        line-height: 1 !important;
       }
     }
 </style>
@@ -4863,15 +4877,17 @@
 
       function onWheel(e) {
         if (pdIsVert) return;
-        e.preventDefault();
         
-        const scrollAmount = e.deltaY * 1.5;
-        gsap.to(sc, {
-          scrollLeft: sc.scrollLeft + scrollAmount,
-          duration: 0.45,
-          ease: 'power2.out',
-          overwrite: 'auto'
-        });
+        const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+        if (delta === 0) return;
+        
+        const maxScroll = sc.scrollWidth - sc.clientWidth;
+        if ((delta > 0 && sc.scrollLeft >= maxScroll) || (delta < 0 && sc.scrollLeft <= 0)) {
+          return;
+        }
+        
+        e.preventDefault();
+        sc.scrollLeft += delta;
       }
 
       sc.addEventListener('scroll', onScroll, { passive: true });
