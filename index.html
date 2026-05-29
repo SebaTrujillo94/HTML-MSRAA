@@ -2298,14 +2298,20 @@
       text-transform: uppercase;
       color: var(--muted);
       z-index: 100001;
-      bottom: 28px;
+      bottom: 20px;
       cursor: pointer;
-      transition: color 0.3s;
+      transition: color 0.3s, opacity 0.3s;
       opacity: 0;
+      background: none;
+      border: none;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
     .pd-nav-label:hover { color: var(--white); }
-    .pd-nav-left { left: 16px; }
-    .pd-nav-right { right: 16px; }
+    .pd-nav-left { left: 8px; }
+    .pd-nav-right { right: 8px; }
 
     .pd-panel-hero {
       width: 100vw;
@@ -2341,8 +2347,8 @@
       flex: 1;
       font-family: 'Calibri', sans-serif;
       font-weight: 300;
-      font-size: clamp(2.8rem, 7vw, 8.5rem);
-      letter-spacing: -2px;
+      font-size: clamp(1.8rem, 4.2vw, 5rem);
+      letter-spacing: -1px;
       line-height: 1;
       color: var(--white);
     }
@@ -2482,9 +2488,10 @@
       .pd-meta-list li { opacity: 1; transform: none; }
       .pd-panel-label { opacity: 1; transform: none; margin-bottom: 20px; }
       .pd-panel-body { font-size: clamp(0.95rem, 4vw, 1.1rem); opacity: 1; transform: none; }
-      .pd-close { top: 16px; right: 16px; width: 40px; height: 40px; font-size: 13px; }
-      .pd-orient { top: 16px; right: 66px; width: 40px; height: 40px; font-size: 15px; }
-      .pd-nav-label { display: none; }
+      .pd-close { top: 14px; right: 14px; width: 40px; height: 40px; font-size: 13px; }
+      .pd-orient { top: 14px; right: 62px; width: 40px; height: 40px; font-size: 15px; }
+      .pd-hero-title-big { font-size: clamp(1.4rem, 8vw, 3rem); letter-spacing: -0.5px; }
+      .pd-nav-label { display: flex; font-size: 8px; letter-spacing: 2px; bottom: 14px; }
       .pd-progress { opacity: 1; }
 
       /* HORIZONTAL mode on mobile */
@@ -4380,8 +4387,14 @@
       <div class="pd-progress" id="pdProgress">
         <div class="pd-progress-fill" id="pdProgressFill"></div>
       </div>
-      <div class="pd-nav-label pd-nav-left">MENÚ</div>
-      <div class="pd-nav-label pd-nav-right">CONTACTO</div>
+      <button class="pd-nav-label pd-nav-left" id="pdNavMenu">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        MENÚ
+      </button>
+      <button class="pd-nav-label pd-nav-right" id="pdNavContact">
+        CONTACTO
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
     </div>
 
   <script>
@@ -4414,6 +4427,40 @@
       document.body.classList.remove('sidebars-hidden');
       document.body.classList.add('mobile-menu-open');
     });
+
+    // Overlay MENU button → close overlay + open sidebar menu
+    const pdNavMenu = document.getElementById('pdNavMenu');
+    if (pdNavMenu) {
+      pdNavMenu.addEventListener('click', () => {
+        const pdOverlay = document.getElementById('pdOverlay');
+        if (pdOverlay) {
+          pdOverlay.classList.remove('pd-visible');
+          setTimeout(() => { pdOverlay.style.display = 'none'; }, 550);
+          document.body.style.overflow = '';
+        }
+        setTimeout(() => {
+          document.body.classList.remove('sidebars-hidden');
+          document.body.classList.add('mobile-menu-open');
+        }, 300);
+      });
+    }
+
+    // Overlay CONTACTO button → close overlay + scroll to contact
+    const pdNavContact = document.getElementById('pdNavContact');
+    if (pdNavContact) {
+      pdNavContact.addEventListener('click', () => {
+        const pdOverlay = document.getElementById('pdOverlay');
+        if (pdOverlay) {
+          pdOverlay.classList.remove('pd-visible');
+          setTimeout(() => {
+            pdOverlay.style.display = 'none';
+            document.body.style.overflow = '';
+            const contactEl = document.getElementById('contacto');
+            if (contactEl) contactEl.scrollIntoView({ behavior: 'smooth' });
+          }, 400);
+        }
+      });
+    }
 
     /* SLIDE DATA */
     const slides = [
