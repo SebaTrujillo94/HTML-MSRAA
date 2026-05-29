@@ -1,0 +1,38 @@
+l">Mínimo</div>
+              <div class="calc-range-value" id="calcResMin">—</div>
+              <div class="calc-range-sub">m²</div>
+            </div>
+            <div class="calc-range-card highlight">
+              <div class="calc-range-label">Recomendado</div>
+              <div class="calc-range-value" id="calcResIdeal">—</div>
+              <div class="calc-range-sub">m² ← tu resultado</div>
+            </div>
+            <div class="calc-range-card">
+              <div class="calc-range-label">Ampliado</div>
+              <div class="calc-range-value" id="calcResMax">—</div>
+              <div class="calc-range-sub">m²</div>
+            </div>
+          </div>
+
+          <div class="calc-breakdown">
+            <div class="calc-breakdown-title">Desglose por espacio</div>
+            <div id="calcBreakdownRows"></div>
+            <div id="calcExteriorNote"></div>
+          </div>
+
+          <button class="calc-btn-send-contact" onclick="calcSendToContact()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            <span>Enviar esta estimación al contacto</span>
+          </button>
+          <button class="calc-btn-restart" onclick="calcRestart()">↺ &nbsp;Calcular de nuevo</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CONTACT SECTION -->
+    <div class="contact-sec" id="contacto">
+      <!-- LEFT -->
+      <div class="contact-left">
+        <div class="contact-left-content">
+          <div clas

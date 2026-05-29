@@ -1,0 +1,116 @@
+=== Found cstep0 ===
+cstep0">
+          <div class="calc-step-counter">01 / 05</div>
+          <div class="calc-step-question">¿Cuántas personas vivirán en la casa?</div>
+          <div class="calc-step-hint">Define el número de dormitorios y baños necesarios.</div>
+          <div class="calc-options grid2" data-step="0">
+            <button class="calc-opt" data-val="1" onclick="calcPick(this)">
+              <div class="calc-opt-icon" style="width:76px;height:48px;flex-shrink:0;margin:0">
+                <svg class="calc-opt-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="13" width="13" height="8" rx="1"/><rect x="9" y="5" width="13" height="9" rx="1"/><path d="M2 13h9V5"/><rect x="12" y="16" width="2.5" height="5" rx="0.5"/><rect x="15" y="8" width="4" height="3" rx="0.4"/><rect x="4" y="15" width="2.5" height="3" rx="0.4"/>
+                </svg>
+              </div>
+              <div style="flex:1">
+                <div class="calc-opt-title">Premium · más de 40 UF/m²</div>
+                <div class="calc-opt-sub">Diseño arquitectónico completo, lujo en detalles</div>
+              </div>
+            </button>
+          </div>
+          <div class="calc-step-nav">
+            <button class="calc-btn-back" onclick="calcPrevStep(3)">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 8H3M7 12l-4-4 4-4"/></svg>
+              Volver
+            </button>
+            <button class="calc-btn-next" id="cnext4" disabled onclick="calcDoResult()">
+              Ver resultado
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+            </button>
+      
+
+=== calc-opt-icon at pos 550219 ===
+calc-opt-icon {
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+      color: rgba(255,255,255,0.4);
+      transition: color 0.3s, transform 0.3s;
+    }
+    .calc-opt-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+    .calc-opt-svg path,
+    .calc-opt-svg rec
+
+=== calc-opt-icon at pos 550782 ===
+calc-opt-icon {
+      color: rgba(255,255,255,0.85);
+      transform: scale(1.06);
+    }
+    .calc-opt.selected .calc-opt-icon {
+      color: var(--gold, #e8b84b);
+      transform: scale(1.06);
+    }
+    body[data-theme="light"] .calc-opt-icon {
+      color: rgba(28,28,26,0.35);
+    }
+    body[data-theme="light"] .calc-opt:hover .calc-opt-icon {
+      color: rgba(28,28,26,0.8);
+    }
+    body[data
+
+=== calc-opt-icon at pos 550895 ===
+calc-opt-icon {
+      color: var(--gold, #e8b84b);
+      transform: scale(1.06);
+    }
+    body[data-theme="light"] .calc-opt-icon {
+      color: rgba(28,28,26,0.35);
+    }
+    body[data-theme="light"] .calc-opt:hover .calc-opt-icon {
+      color: rgba(28,28,26,0.8);
+    }
+    body[data-theme="light"] .calc-opt.selected .calc-opt-icon {
+      color: var(--gold, #e8b84b);
+    }
+    .calc-opt-title 
+
+=== calc-opt-icon at pos 551012 ===
+calc-opt-icon {
+      color: rgba(28,28,26,0.35);
+    }
+    body[data-theme="light"] .calc-opt:hover .calc-opt-icon {
+      color: rgba(28,28,26,0.8);
+    }
+    body[data-theme="light"] .calc-opt.selected .calc-opt-icon {
+      color: var(--gold, #e8b84b);
+    }
+    .calc-opt-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--white, #fff);
+      line-height: 1.3;
+    }
+    .
+
+=== calc-opt-icon at pos 551114 ===
+calc-opt-icon {
+      color: rgba(28,28,26,0.8);
+    }
+    body[data-theme="light"] .calc-opt.selected .calc-opt-icon {
+      color: var(--gold, #e8b84b);
+    }
+    .calc-opt-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--white, #fff);
+      line-height: 1.3;
+    }
+    .calc-opt-sub {
+      font-size: 11px;
+      color: var(--grey, rgba(255,255,255,0.4));
+      line-heig
