@@ -2273,6 +2273,26 @@
       will-change: transform;
     }
 
+    .pd-logo {
+      position: fixed;
+      top: 22px;
+      left: 28px;
+      z-index: 100001;
+      width: auto;
+      height: 38px;
+      object-fit: contain;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      filter: brightness(0) invert(1);
+    }
+    body[data-logo="gold"] .pd-logo {
+      filter: brightness(0) invert(75%) sepia(55%) saturate(400%) hue-rotate(350deg);
+    }
+    body[data-logo="black"] .pd-logo {
+      filter: brightness(0) invert(1);
+    }
+
     .pd-close {
       position: fixed;
       top: 28px;
@@ -2514,6 +2534,7 @@
       .pd-panel-label { opacity: 1; transform: none; margin-bottom: 20px; }
       .pd-panel-body { font-size: clamp(0.95rem, 4vw, 1.1rem); opacity: 1; transform: none; }
       .pd-close { top: 14px; right: 14px; width: 40px; height: 40px; font-size: 13px; }
+      .pd-logo { top: 14px; left: 14px; height: 26px; }
       .pd-orient { top: 14px; right: 62px; width: 40px; height: 40px; font-size: 15px; }
       .pd-hero-title-big { font-size: clamp(1.4rem, 8vw, 3rem); letter-spacing: -0.5px; }
       .pd-nav-label { display: flex; font-size: 8px; letter-spacing: 2px; bottom: 14px; }
@@ -4446,6 +4467,7 @@
       <div class="pd-scroll-container" id="pdScrollContainer">
         <!-- Panels injected by JS -->
       </div>
+      <img src="LOGO MSRAA ALTA CALIDAD.png" class="pd-logo" id="pdLogo" alt="MSRAA" onerror="this.style.display='none'">
       <button class="pd-close hov-t" id="pdCloseBtn">✕</button>
       <button class="pd-orient hov-t" id="pdOrientBtn" title="Cambiar orientación">⇔</button>
       <div class="pd-progress" id="pdProgress">
@@ -4837,7 +4859,7 @@
         sc.scrollLeft = 0;
         sc.scrollTop = 0;
         // Clear any lingering GSAP inline styles from previous open/close cycle
-        gsap.set([pdCloseBtn, pdOrientBtn, '#pdProgress', '.pd-nav-label'], { clearProps: 'opacity' });
+        gsap.set([pdCloseBtn, pdOrientBtn, '#pdProgress', '.pd-nav-label', '#pdLogo'], { clearProps: 'opacity' });
         // Lock start states so GSAP doesn't flash
         gsap.set('#pdHeroBg', { scale: 1.08 });
         gsap.set('.pd-title-line span', { y: '105%' });
@@ -4851,11 +4873,11 @@
           .to('.pd-title-line span', { y: '0%', duration: 0.95, stagger: 0.13, ease: "power4.out" }, "-=1.8");
         if (!isMobile) {
           tl.to('.pd-meta-list li', { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, ease: "power3.out" }, "-=1.1")
-            .to([pdCloseBtn, pdOrientBtn, '#pdProgress', '.pd-nav-label'], { opacity: 1, duration: 0.45 }, "-=0.9")
+            .to([pdCloseBtn, pdOrientBtn, '#pdProgress', '.pd-nav-label', '#pdLogo'], { opacity: 1, duration: 0.45 }, "-=0.9")
             .to('.pd-panel-label', { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, "-=0.4")
             .to('.pd-panel-body', { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, "-=0.5");
         } else {
-          tl.to([pdCloseBtn, pdOrientBtn, '#pdProgress'], { opacity: 1, duration: 0.4, stagger: 0.05 }, "-=0.9")
+          tl.to([pdCloseBtn, pdOrientBtn, '#pdProgress', '#pdLogo'], { opacity: 1, duration: 0.4, stagger: 0.05 }, "-=0.9")
             .to('.pd-meta-list li', { opacity: 1, y: 0, duration: 0.4, stagger: 0.06, ease: "power3.out" }, "-=0.6")
             .to('.pd-panel-label', { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, "-=0.3")
             .to('.pd-panel-body', { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, "-=0.4");
@@ -4915,10 +4937,10 @@
 
     pdCloseBtn.addEventListener('click', () => {
       pdOverlay.classList.remove('pd-visible');
-      gsap.to([pdCloseBtn, pdOrientBtn, '#pdProgress', '.pd-nav-label'], { opacity: 0, duration: 0.22 });
+      gsap.to([pdCloseBtn, pdOrientBtn, '#pdProgress', '.pd-nav-label', '#pdLogo'], { opacity: 0, duration: 0.22 });
       setTimeout(() => {
         // Kill all overlay tweens before clearing DOM
-        gsap.killTweensOf([pdCloseBtn, pdOrientBtn, '#pdProgress', '.pd-nav-label',
+        gsap.killTweensOf([pdCloseBtn, pdOrientBtn, '#pdProgress', '.pd-nav-label', '#pdLogo',
           '.pd-title-line span', '.pd-meta-list li', '.pd-panel-label', '.pd-panel-body', '#pdHeroBg']);
         pdOverlay.style.display = 'none';
         pdOverlay.classList.remove('pd-vert');
