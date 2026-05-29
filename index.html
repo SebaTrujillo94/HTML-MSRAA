@@ -4519,7 +4519,8 @@
       if (hasTitle) {
         gsap.to(titles, {
           y: "100%", duration: .4, ease: "power3.in", onComplete: () => {
-            heroVideo.src = slides[i].vid; heroVideo.load(); heroVideo.play();
+            heroVideo.src = slides[i].vid; heroVideo.load();
+            const p = heroVideo.play(); if (p) p.catch(() => {});
             titles[0].textContent = slides[i].t1; titles[1].textContent = slides[i].t2;
             heroTitleWrap.style.visibility = 'visible';
             gsap.fromTo(heroVideo, { scale: 1.15 }, { scale: 1.05, duration: 2, ease: "power3.out" });
@@ -4529,7 +4530,8 @@
       } else {
         gsap.to(titles, {
           y: "100%", duration: .4, ease: "power3.in", onComplete: () => {
-            heroVideo.src = slides[i].vid; heroVideo.load(); heroVideo.play();
+            heroVideo.src = slides[i].vid; heroVideo.load();
+            const p = heroVideo.play(); if (p) p.catch(() => {});
             heroTitleWrap.style.visibility = 'hidden';
             gsap.fromTo(heroVideo, { scale: 1.15 }, { scale: 1.05, duration: 2, ease: "power3.out" });
             cur = i; anim = false; startAuto();
@@ -5564,7 +5566,7 @@
       loader.style.padding = '80px 0';
       loader.style.opacity = '0';
       loader.style.transition = 'opacity 0.3s ease';
-      loader.innerHTML = '<div style="width:40px;height:40px;border:3px solid rgba(232,184,75,0.2);border-top:3px solid var(--gold);border-radius:50%;animation:calcSpin 1s linear infinite;margin:0 auto;"></div><div style="margin-top:24px; font-family:'Calibri', sans-serif; font-size:11px; letter-spacing:0.2em; color:var(--gold); text-align:center;">CALCULANDO ESTIMACIÓN...</div>';
+      loader.innerHTML = '<div style="width:40px;height:40px;border:3px solid rgba(232,184,75,0.2);border-top:3px solid var(--gold);border-radius:50%;animation:calcSpin 1s linear infinite;margin:0 auto;"></div><div style="margin-top:24px; font-family:Calibri, sans-serif; font-size:11px; letter-spacing:0.2em; color:var(--gold); text-align:center;">CALCULANDO ESTIMACIÓN...</div>';
       const resPanel = document.getElementById('calcResultPanel');
       resPanel.parentNode.insertBefore(loader, resPanel);
       
