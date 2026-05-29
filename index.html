@@ -5274,6 +5274,9 @@
           const targetId = this.dataset.target;
           const filter   = this.dataset.filter;
 
+          // Close mobile menu when any nav link is clicked
+          document.body.classList.remove('mobile-menu-open');
+
           // Active state
           document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('nav-active'));
           this.classList.add('nav-active');
