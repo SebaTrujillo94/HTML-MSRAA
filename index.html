@@ -2227,18 +2227,31 @@
     .pd-scroll-container {
       width: 100%;
       height: 100vh;
-      overflow: hidden;
+      overflow-x: auto;
+      overflow-y: hidden;
       position: relative;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE/Edge */
+    }
+    .pd-scroll-container::-webkit-scrollbar {
+      display: none; /* Chrome/Safari */
     }
     /* Vertical mode and mobile: enable scroll */
     .pd-overlay.pd-vert .pd-scroll-container {
-      overflow-y: scroll;
-      overflow-x: hidden;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
     }
     .pd-sticky {
       position: relative;
       height: 100vh;
-      overflow: hidden;
+      overflow: visible;
+      display: inline-block;
+    }
+    .pd-overlay.pd-vert .pd-sticky {
+      height: auto;
+      overflow: visible;
+      display: block;
     }
     .pd-panels {
       display: flex;
@@ -2495,8 +2508,16 @@
       .pd-progress { opacity: 1; }
 
       /* HORIZONTAL mode on mobile */
-      .pd-overlay:not(.pd-vert) .pd-scroll-container { overflow: hidden; }
-      .pd-overlay:not(.pd-vert) .pd-sticky { height: 100vh; overflow: hidden; }
+      .pd-overlay:not(.pd-vert) .pd-scroll-container {
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        -webkit-overflow-scrolling: touch;
+      }
+      .pd-overlay:not(.pd-vert) .pd-sticky {
+        height: 100vh;
+        overflow: visible !important;
+        display: inline-block;
+      }
       .pd-overlay:not(.pd-vert) .pd-panels { height: 100vh; }
       .pd-overlay:not(.pd-vert) .pd-panel-hero { width: 100vw; height: 100vh; }
       .pd-overlay:not(.pd-vert) .pd-panel-img { width: 100vw; height: 100vh; }
@@ -2671,6 +2692,23 @@
     .pd-overlay.pd-vert .pd-panel-text { width: 100%; max-width: 860px; margin: 0 auto; padding: 12vh 8vw; border-left: none; border-top: 1px solid rgba(255,255,255,0.06); height: auto; }
     .pd-overlay.pd-vert .pd-panel-next { width: 100%; }
     .pd-overlay.pd-vert .pd-nav-label { display: none; }
+
+    @media (max-width: 992px) {
+      .pd-close {
+        top: 14px !important;
+        right: 14px !important;
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 13px !important;
+      }
+      .pd-orient {
+        top: 14px !important;
+        right: 62px !important;
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 15px !important;
+      }
+    }
 </style>
 </head>
 
@@ -4769,6 +4807,9 @@
       const allImgs = Array.from(sc.querySelectorAll('img'));
       const loadPromises = allImgs.map(img => img.complete ? Promise.resolve() : new Promise(r => { img.onload = r; img.onerror = r; }));
       Promise.all(loadPromises).then(() => {
+        // Reset scroll position on opening
+        sc.scrollLeft = 0;
+        sc.scrollTop = 0;
         // Clear any lingering GSAP inline styles from previous open/close cycle
         gsap.set([pdCloseBtn, pdOrientBtn, '#pdProgress', '.pd-nav-label'], { clearProps: 'opacity' });
         // Lock start states so GSAP doesn't flash
@@ -4806,107 +4847,42 @@
     }
 
     function initPdHoriz() {
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        const panels = document.getElementById('pdPanels');
-        const sc = document.getElementById('pdScrollContainer');
-        const fill = document.getElementById('pdProgressFill');
-        if (!panels || !sc) return;
+      const sc = document.getElementById('pdScrollContainer');
+      const fill = document.getElementById('pdProgressFill');
+      if (!sc) return;
 
-        const totalX = panels.offsetWidth - window.innerWidth;
-        if (totalX <= 0) return;
+      const panels = document.getElementById('pdPanels');
+      if (panels) panels.style.transform = '';
 
-        const pos = { x: 0 };
+      function onScroll() {
+        const max = sc.scrollWidth - sc.clientWidth;
+        if (fill && max > 0) fill.style.transform = 'scaleX(' + (sc.scrollLeft / max) + ')';
+      }
 
-        function drive(delta) {
-          const target = Math.max(0, Math.min(totalX, pos.x + delta));
-          gsap.to(pos, {
-            x: target,
-            duration: 0.6,
-            ease: 'power3.out',
-            overwrite: true,
-            onUpdate: () => {
-              panels.style.transform = 'translateX(' + (-pos.x) + 'px)';
-              if (fill) fill.style.transform = 'scaleX(' + (pos.x / totalX) + ')';
-            }
-          });
-        }
+      function onWheel(e) {
+        if (pdIsVert) return;
+        e.preventDefault();
+        
+        const scrollAmount = e.deltaY * 1.5;
+        gsap.to(sc, {
+          scrollLeft: sc.scrollLeft + scrollAmount,
+          duration: 0.45,
+          ease: 'power2.out',
+          overwrite: 'auto'
+        });
+      }
 
-        function onWheel(e) {
-          e.preventDefault();
-          drive(e.deltaY * 3.0);
-        }
+      sc.addEventListener('scroll', onScroll, { passive: true });
+      pdOverlay.addEventListener('wheel', onWheel, { passive: false });
 
-        // Touch: swipe left/right to navigate panels with native-feeling momentum
-        let touchStartX = 0;
-        let lastTouchX = 0;
-        let touchStartPos = 0;
-        let lastTouchTime = 0;
-        let velocity = 0;
+      const sc2 = sc;
+      sc2._pdCleanup = () => {
+        sc2.removeEventListener('scroll', onScroll);
+        pdOverlay.removeEventListener('wheel', onWheel);
+        gsap.killTweensOf(sc2);
+      };
 
-        function onTouchStart(e) {
-          touchStartX = e.touches[0].clientX;
-          lastTouchX = touchStartX;
-          touchStartPos = pos.x;
-          lastTouchTime = Date.now();
-          velocity = 0;
-          gsap.killTweensOf(pos); // Stop any active decay animation
-        }
-
-        function onTouchMove(e) {
-          // Prevent default scrolling behaviors
-          e.preventDefault();
-          const currentX = e.touches[0].clientX;
-          const currentTime = Date.now();
-          const dx = touchStartX - currentX;
-          const deltaX = lastTouchX - currentX;
-          const deltaTime = currentTime - lastTouchTime;
-
-          if (deltaTime > 0) {
-            velocity = deltaX / deltaTime;
-          }
-
-          pos.x = Math.max(0, Math.min(totalX, touchStartPos + dx));
-          panels.style.transform = 'translateX(' + (-pos.x) + 'px)';
-          if (fill) fill.style.transform = 'scaleX(' + (pos.x / totalX) + ')';
-
-          lastTouchX = currentX;
-          lastTouchTime = currentTime;
-        }
-
-        function onTouchEnd(e) {
-          if (Math.abs(velocity) > 0.15) {
-            const inertiaDistance = velocity * 320; // project forward
-            const target = Math.max(0, Math.min(totalX, pos.x + inertiaDistance));
-            const duration = Math.min(1.0, Math.max(0.3, Math.abs(inertiaDistance) / 900));
-            gsap.to(pos, {
-              x: target,
-              duration: duration,
-              ease: 'power2.out',
-              overwrite: true,
-              onUpdate: () => {
-                panels.style.transform = 'translateX(' + (-pos.x) + 'px)';
-                if (fill) fill.style.transform = 'scaleX(' + (pos.x / totalX) + ')';
-              }
-            });
-          }
-        }
-
-        pdOverlay.addEventListener('wheel', onWheel, { passive: false });
-        pdOverlay.addEventListener('touchstart', onTouchStart, { passive: true });
-        pdOverlay.addEventListener('touchmove', onTouchMove, { passive: false });
-        pdOverlay.addEventListener('touchend', onTouchEnd, { passive: true });
-        pdOverlay.addEventListener('touchcancel', onTouchEnd, { passive: true });
-
-        const sc2 = sc; // capture
-        sc2._pdCleanup = () => {
-          pdOverlay.removeEventListener('wheel', onWheel);
-          pdOverlay.removeEventListener('touchstart', onTouchStart);
-          pdOverlay.removeEventListener('touchmove', onTouchMove);
-          pdOverlay.removeEventListener('touchend', onTouchEnd);
-          pdOverlay.removeEventListener('touchcancel', onTouchEnd);
-          gsap.killTweensOf(pos);
-        };
-      }));
+      onScroll();
     }
 
     pdCloseBtn.addEventListener('click', () => {
